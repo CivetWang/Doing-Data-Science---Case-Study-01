@@ -23,5 +23,5 @@ Packages used
        <li>maps
         <li>stringr
          <li>ggplot2
-          <li>ggthemes
+          <li>ggthemes   
            \\PS:There is list at the begining of the raw R file in case of any reproduce with easy install and library.
