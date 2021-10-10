@@ -16,3 +16,7 @@ Packages used
  <li>plotly,ggplot2,ggthemes,maps
   <li>tidyverse,dplyr,tidyr,pastecs,stringr
    <BR>  PS:There is list at the begining of the raw R file in case of any reproduce with easy install and library.
+
+    
+Youtube Links of Individual Presenation you may wanna check out
+------------
