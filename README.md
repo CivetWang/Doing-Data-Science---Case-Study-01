@@ -6,7 +6,7 @@
 <li>If there is any further question , feel free to email us at:  
 <Br/>Jeff Johnson:  
 <Br/>Lihao Wang:  
-<Br/>ALonso Salcido:  
+<Br/>Alonso Salcido:  
 <ol>
 
  
@@ -22,4 +22,4 @@ Youtube Links of Individual Presenation you may wanna check out
 ------------
 <Br/>Jeff Johnson:  
 <Br/>Lihao Wang:  
-<Br/>ALonso Salcido: 
+<Br/>Alonso Salcido: 
