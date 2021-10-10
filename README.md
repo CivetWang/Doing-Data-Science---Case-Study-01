@@ -10,5 +10,15 @@
 <ol>
 
  
- REQUIREMENTS
+Packages used
 ------------
+<li>randomForest
+<li>caTools
+ <li>plotly
+  <li>e1071
+   <li>pastecs
+    <li>dplyr
+     <li>tidyverse
+      <li>tidyr
+       <li>
+        <li>
