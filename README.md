@@ -12,16 +12,7 @@
  
 Packages used
 ------------
-<li>randomForest
-<li>caTools
- <li>plotly
-  <li>e1071
-   <li>pastecs
-    <li>dplyr
-     <li>tidyverse
-      <li>tidyr
-       <li>maps
-        <li>stringr
-         <li>ggplot2
-          <li>ggthemes 
-           <BR>  PS:There is list at the begining of the raw R file in case of any reproduce with easy install and library.
+<li>randomForest,e1071,caTools
+ <li>plotly,ggplot2,ggthemes,maps
+  <li>tidyverse,dplyr,tidyr,pastecs,stringr
+   <BR>  PS:There is list at the begining of the raw R file in case of any reproduce with easy install and library.
