@@ -20,5 +20,8 @@ Packages used
     <li>dplyr
      <li>tidyverse
       <li>tidyr
-       <li>
-        <li>
+       <li>maps
+        <li>stringr
+         <li>ggplot2
+          <li>ggthemes
+           <li>PS:There is list at the begining of the raw R file in case of any reproduce with easy install and library.
