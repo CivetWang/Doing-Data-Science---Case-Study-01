@@ -1,0 +1,227 @@
+---
+title: "DS6306 Case Study 1"
+author: "Jeff Johnson, ALonso Salcido, Lihao Wang"
+date: "10/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.height=7, fig.width=12, fig.align="center")
+```
+
+## A Case Study on Craft Beers and Breweries across the USA
+
+We've obtained data on craft beers and breweries found in the United States and offer the following analysis. 
+```{r}
+## Load packages
+# install.packages("readr")
+# install.packages("ggplot2")
+# install.packages("ggthemes")
+# install.packages("plotly")
+# install.packages("stringr")
+# install.packages("maps")
+# install.packages("tidyverse")
+# install.packages("tidyr")
+# install.packages("dplyr")
+# install.packages("pastecs")
+# install.packages("e1071")
+# install.packages("randomForest")
+# install.packages("caTools")
+# install.packages('plotly')
+
+#load libraries
+library(readr)
+library(ggplot2)
+library(ggthemes)
+library(plotly)
+library(stringr)
+library(maps)
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(pastecs)
+library(e1071)
+library(caret)
+library(randomForest)
+library(class)
+library(caTools)
+library(plotly)
+library(maps)
+
+
+#Load data
+Beers <- read_csv(file.choose())
+Breweries <- read_csv(file.choose())
+
+```
+
+
+## A Summary of Breweries Among States
+
+How many breweries are present in each state?
+
+Please find the below plot which will interactively show each state's exact number of craft breweries, followed by a summary of each in plain text and finally, with a heatmap of the United States.
+```{r}
+#bar plot of breweries by state
+brewstateplot = ggplot(Breweries,mapping = aes(x=State,fill=State)) + geom_bar() + ggtitle("Breweries present in each state")
+ggplotly(brewstateplot)
+
+summary(as.factor(Breweries$State)) # display breweries by state in plain text
+
+#heatmap of breweries by state
+lookup = data.frame(abb = state.abb, State = state.name)
+Beer.map=Breweries
+colnames(Beer.map)[4]="abb"
+Beer.map2=merge(Beer.map,lookup,"abb")
+Beer.mapdata=count(Beer.map2,State)
+colnames(Beer.mapdata)[2]="B"
+Beer.mapdata$region=tolower(Beer.mapdata$State)
+Beer.mapdata2=Beer.mapdata[-1]
+states <- map_data("state")
+map.df <- merge(states,Beer.mapdata2, by="region", all.x=T)
+map.df <- map.df[order(map.df$order),]
+ggplot(map.df, aes(x=long,y=lat,group=group))+
+  geom_polygon(aes(fill=B))+
+  geom_path()+ 
+  scale_fill_gradientn(colours=rev(heat.colors(10)),na.value="grey90")+ggtitle("Heatmap of Breweries by State")+
+  coord_map()
+```
+
+## Tidying the Raw Data
+
+Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file. 
+```{r}
+Beer.afmg = merge(Beers,Breweries, by.x = "Brewery_id", by.y = "Brew_ID") # merge by brewery id
+head(Beer.afmg) # show first 6 observations
+tail(Beer.afmg) # show last 6 observations
+```
+
+## Address Missing values
+
+Address the missing values in each column.
+
+Missing values (in ABV and IBU) were omitted due to several possible alternative circumstances. If we were to replace them with the median value, it would hold many statistics to their values (namely the median across all) but ethically would be unsound. We also could replace these values with zeroes when doing our calculations, which is more ethically right, but would skew the statistics.
+```{r}
+Beer.afIBUna = Beer.afmg[!is.na(Beer.afmg$IBU),] #Omit IBU NAs
+Beer.afABVna = Beer.afmg[!is.na(Beer.afmg$ABV),] #Omit ABV NAs
+Beer.afna = Beer.afABVna[!is.na(Beer.afABVna$IBU),] #ALL NA omitted
+
+```
+
+## Median comparison of ABV and IBU among states
+
+Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare.
+```{r}
+ABV.summary <- Beer.afABVna %>%  group_by(State) %>%  summarise(median = median(ABV)) #set ABV summary tibble
+medianabvplot = ggplot(ABV.summary,aes(State,median,fill = State))+geom_bar(stat = "identity")
+ggplotly(medianabvplot) #plot median ABV in plotly
+
+IBU.summary <- Beer.afIBUna %>%  group_by(State) %>%  summarise(median = median(IBU)) #set IBU summary tibble
+medianibuplot = ggplot(IBU.summary,aes(State,median,fill = State))+geom_bar(stat = "identity")
+ggplotly(medianibuplot) #plot median IBU in plotly
+```
+
+## Max ABV and IBU by state
+
+Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
+```{r}
+Beer.afABVna[which.max(Beer.afABVna$ABV),]$State # Highest ABV
+Beer.afIBUna[which.max(Beer.afIBUna$IBU),]$State # Highest IBU
+```
+
+## Distribution of ABV
+
+Comment on the summary statistics and distribution of the ABV variable.
+```{r}
+#summary statistics
+stat.desc(Beer.afABVna)
+
+#plot of ABV distribution
+abvdistplot= ggplot(Beer.afABVna,mapping = aes(ABV,fill=State)) + geom_histogram(position = "stack", binwidth=0.003)
+ggplotly(abvdistplot)
+```
+The ABV distribution is right-skewed which shows that craft brewers are providing a higher alcohol content than the 5-6% range, indicating a higher likelihood of a consumer preference in craft beers with a higher alcohol content.
+
+
+## Relationship between IBU and ABV
+
+Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.  Make your best judgment of a relationship and EXPLAIN your answer.
+```{r}
+#linear model plot
+Beer.model = lm(IBU~ABV,data=Beer.afna) #set linear model
+summary(Beer.model)
+lmplot = ggplot(Beer.afna,mapping = aes(x = ABV,y = IBU)) + geom_point() +
+  geom_smooth(method = 'lm', linetype = "dashed", color = "darkred", fill="blue") + 
+  stat_density_2d() #2d density estimation
+ggplotly(lmplot)
+
+#best fit model plot
+abviburelplot = ggplot(Beer.afna,mapping = aes(x = ABV,y = IBU)) + geom_point() +
+  geom_smooth(linetype = "dashed", color = "darkred", fill = "blue") + 
+  stat_density_2d() #2d density estimation
+ggplotly(abviburelplot)
+
+cor(Beer.afna$ABV,Beer.afna$IBU) #correlation coefficient between ABV and IBU
+```
+
+
+
+##k-NN Classification
+
+Budweiser would also like to investigate the difference with respect to IBU and ABV between IPAs (India Pale Ales) and other types of Ale (any beer with “Ale” in its name other than IPA).  
+You decide to use KNN classification to investigate this relationship.  Provide statistical evidence one way or the other. 
+You can of course assume your audience is comfortable with percentages … KNN is very easy to understand conceptually.
+```{r}
+Beer.ale=Beer.afna[str_detect(Beer.afna$Style,"(IPA|Ale)"),] #create data frame of IPAs and Ales
+Beer.ale=na.omit(Beer.ale) #omit any NAs from data frame
+Beer.ale$Type=ifelse(str_detect(Beer.ale$Style,"IPA"),"IPA","Ale") #set type to IPA or else Ale
+set.seed(4) #set seed for random number generation
+smp_size.ale=floor(0.7 * nrow(Beer.ale)) #set sample size for training indices
+train.ind=sample(seq_len(nrow(Beer.ale)), size = smp_size.ale) #set training indices for training set and inversely test
+
+Beer.train=Beer.ale[train.ind,] #create training set
+Beer.train$IBU = scale(Beer.train$IBU) #scale IBU variable
+Beer.train$ABV = scale(Beer.train$ABV) #scale ABV variable
+
+Beer.test = Beer.ale[-train.ind,] #create test set
+Beer.test$IBU = scale(Beer.test$IBU) #scale IBU variable
+Beer.test$ABV = scale(Beer.test$ABV) #scale ABV variable
+
+abvibuplot = ggplot(Beer.ale, aes(x = IBU, y = ABV,color = Type)) + geom_point() + ggtitle("Distribution of Bitterness and Alcohol Content in Ales and IPAs")
+ggplotly(abvibuplot)
+
+#k-NN model with k as square root of number of observations in training set
+Beer.knn = knn(Beer.train[,c(4,5)],Beer.test[,c(4,5)],Beer.train$Type,k=sqrt(nrow(Beer.train)))
+
+confusionMatrix(Beer.knn,as.factor(Beer.test$Type)) #confusion matrix to show statistics on model
+```
+We have a working k-NN model that can predict IPAs and Ales with 84% accuracy when using ABV and IBU as predictors. This is useful in market research in order to determine what kind of ABV and IBUs to use in order to target the most craft consumers.
+
+
+## Other models
+
+In addition, while you have decided to use KNN to investigate this relationship (KNN is required) you may also feel free to supplement your response to this question with any other methods or techniques you have learned.  Creativity and alternative solutions are always encouraged.  
+```{r}
+# Naive Bayes model
+Beer.nb = naiveBayes(Type~.,data=Beer.train) #set Naive Bayes model with training set
+Beer.nb.pred = predict(Beer.nb,Beer.test[,c(4,5)]) #predict beers in test set
+confusionMatrix(Beer.nb.pred,as.factor(Beer.test$Type)) #confusion matrix to show statistics on model
+
+
+# Extra possible results
+
+alesstateplot = ggplot(Beer.ale,mapping=aes(x=State,fill=Type))+geom_bar()+ggtitle("ALE and IPA present in each state")
+ggplotly(alesstateplot)
+
+Beer.TypeChart = merge(Beer.afna,Beer.ale,by=c("Brewery_id","Beer_ID", "Name.x", "ABV", "IBU", 
+                                               "Style", "Ounces", "Name.y", "City", "State"), all=TRUE)
+Beer.TypeChart$Type[is.na(Beer.TypeChart$Type)]="Other"
+
+beerprefstateplot = ggplot(Beer.TypeChart,mapping=aes(x=State,fill=Type))+
+  geom_bar(position="fill")+
+  ggtitle("Beer Preference by State")+
+  ylab("Percentage")+
+  scale_y_continuous(labels = scales::percent_format())
+ggplotly(beerprefstateplot)
+
+```
