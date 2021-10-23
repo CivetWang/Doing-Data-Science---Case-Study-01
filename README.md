@@ -6,7 +6,7 @@
 <li>If there is any further question , feel free to email us at:  
 <Br/>Jeff Johnson: jeffjohnson@smu.edu
 <Br/>Lihao Wang:  harrywang@smu.edu
-<Br/>Alonso Salcido:  
+<Br/>Alonso Salcido: asalcido@smu.edu 
 <ol>
 
  
