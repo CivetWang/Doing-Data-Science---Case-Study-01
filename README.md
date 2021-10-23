@@ -5,7 +5,7 @@
 <li>Form  <> , youn would be able to find and follow our thought and discovery based of Indian Pale Ales and other kinds of Ales.
 <li>If there is any further question , feel free to email us at:  
 <Br/>Jeff Johnson: jeffjohnson@smu.edu
-<Br/>Lihao Wang:  
+<Br/>Lihao Wang:  harrywang@smu.edu
 <Br/>Alonso Salcido:  
 <ol>
 
