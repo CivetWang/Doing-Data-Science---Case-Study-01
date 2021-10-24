@@ -20,6 +20,6 @@ Packages used
     
 Youtube Links of Individual Presenation you may wanna check out
 ------------
-<Br/>Jeff Johnson:  
+<Br/>Jeff Johnson: https://youtu.be/mNIis1BHYEk
 <Br/>Lihao Wang:  https://youtu.be/lgvf1Za3SnY
 <Br/>Alonso Salcido: https://youtu.be/TDhA4l78nBU
