@@ -2,7 +2,7 @@
  <ol>
 <li>The case study is meant to study the Beers dataset which contains a list of 2410 US craft beers and the Breweries dataset which contains 558 US breweries. 
 <li>The target is to find relationship and classification between different variable, location or breweries.
-<li>Form  《DS6306CaseStudy1.html》, youn would be able to find and follow our thought and discovery based of Indian Pale Ales and other kinds of Ales.（May require downloading the file or by https://htmlpreview.github.io/?https://github.com/CivetWang/Doing-Data-Science---Case-Study-01/blob/main/DS6306CaseStudy1.html）
+<li>Form  《DS6306CaseStudy1.html》, youn would be able to find and follow our thought and discovery based of Indian Pale Ales and other kinds of Ales.（May require downloading the file or by https://rawcdn.githack.com/CivetWang/Doing-Data-Science---Case-Study-01/8b20ad5f3294630ad60c6e6ac98dae051e488698/DS6306CaseStudy1.html）
 <li>If there is any further question , feel free to email us at:  
 <Br/>Jeff Johnson: jeffjohnson@smu.edu
 <Br/>Lihao Wang:  harrywang@smu.edu
