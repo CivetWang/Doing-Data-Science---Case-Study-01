@@ -163,7 +163,7 @@ ggplotly(abviburelplot)
 
 cor(Beer.afna$ABV,Beer.afna$IBU) #correlation coefficient between ABV and IBU
 ```
-
+Seen in the above plots, there is a relationship between IBU and ABV, shown with a linear model and best fit model. With a correlation coeffection of 0.67; this shows a high  positive correlation between the two.
 
 
 ##k-NN Classification
